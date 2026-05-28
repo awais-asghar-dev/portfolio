@@ -425,11 +425,63 @@
     ::-webkit-scrollbar-track { background: var(--navy); }
     ::-webkit-scrollbar-thumb { background: rgba(0,201,177,.3); border-radius: 100px; }
 
+    /* ── Mobile Menu toggle button ── */
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 1.4rem;
+      cursor: none;
+      outline: none;
+      transition: color .2s;
+      z-index: 101;
+    }
+    .nav-toggle:hover { color: var(--teal); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 991px) {
       nav { padding: 1rem 1.5rem; }
       nav.scrolled { padding: .8rem 1.5rem; }
-      .nav-links { display: none; }
+      
+      .nav-toggle { display: block; }
+      
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: rgba(5, 14, 31, 0.98);
+        backdrop-filter: blur(20px);
+        border-left: 1px solid var(--border);
+        padding: 7rem 2.5rem 3rem;
+        gap: 2rem;
+        align-items: flex-start;
+        z-index: 99;
+        transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+      }
+      .nav-links.active {
+        right: 0;
+      }
+      .nav-links a {
+        font-size: 1.15rem;
+        width: 100%;
+        display: block;
+      }
+      @media (max-width: 480px) {
+        .nav-cta { display: none; }
+      }
+
       #hero { grid-template-columns: 1fr; padding: 7rem 2rem 4rem; gap: 3rem; }
       .hero-image-wrap { order: -1; }
       .hero-img-frame { width: 280px; height: 340px; }
@@ -455,14 +507,19 @@
   <!-- ══════════ NAVBAR ══════════ -->
   <nav id="navbar">
     <a href="#" class="nav-logo">Flutter<span>Dev</span></a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinks">
       <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <a href="#contact" class="nav-cta">Hire Me</a>
+    <div class="nav-actions">
+      <a href="#contact" class="nav-cta">Hire Me</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
   </nav>
 
   <!-- ══════════ HERO ══════════ -->
@@ -865,7 +922,7 @@
 
   <!-- ══════════ FOOTER ══════════ -->
   <footer>
-    <div class="footer-copy">© 2025 <strong>Your Name</strong> — Flutter Developer. All rights reserved.</div>
+    <div class="footer-copy">© 2022 <strong>Muhammad Awais</strong> — Flutter Developer. All rights reserved.</div>
     <div class="footer-copy">Crafted with <i class="fas fa-heart" style="color:var(--accent)"></i> in Lahore, Pakistan</div>
   </footer>
 
@@ -989,6 +1046,28 @@
       });
     }, { threshold: 0.5 });
     document.querySelector('.hero-stats') && statObserver.observe(document.querySelector('.hero-stats'));
+
+    // ── Mobile Menu toggle
+    const toggleBtn = document.getElementById('navToggle');
+    const navLinksList = document.getElementById('navLinks');
+    if (toggleBtn && navLinksList) {
+      toggleBtn.addEventListener('click', () => {
+        navLinksList.classList.toggle('active');
+        const icon = toggleBtn.querySelector('i');
+        if (navLinksList.classList.contains('active')) {
+          icon.className = 'fas fa-times';
+        } else {
+          icon.className = 'fas fa-bars';
+        }
+      });
+      // Close menu when clicking on any link
+      navLinksList.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinksList.classList.remove('active');
+          toggleBtn.querySelector('i').className = 'fas fa-bars';
+        });
+      });
+    }
   </script>
 </body>
 </html>
