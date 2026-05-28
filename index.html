@@ -829,28 +829,28 @@
       </div>
 
       <div class="reveal">
-        <form class="contact-form" id="contactForm">
+        <form class="contact-form" id="contactForm" method="POST" action="submit_contact.php">
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">First Name</label>
-              <input type="text" class="form-control-custom" placeholder="John">
+              <input type="text" name="first_name" class="form-control-custom" placeholder="John" required>
             </div>
             <div class="form-group">
               <label class="form-label">Last Name</label>
-              <input type="text" class="form-control-custom" placeholder="Doe">
+              <input type="text" name="last_name" class="form-control-custom" placeholder="Doe">
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control-custom" placeholder="john@example.com">
+            <input type="email" name="email" class="form-control-custom" placeholder="john@example.com" required>
           </div>
           <div class="form-group">
             <label class="form-label">Subject</label>
-            <input type="text" class="form-control-custom" placeholder="Project Inquiry">
+            <input type="text" name="subject" class="form-control-custom" placeholder="Project Inquiry">
           </div>
           <div class="form-group">
             <label class="form-label">Message</label>
-            <textarea class="form-control-custom" rows="5" placeholder="Tell me about your project..."></textarea>
+            <textarea name="message" class="form-control-custom" rows="5" placeholder="Tell me about your project..." required></textarea>
           </div>
           <button type="submit" class="btn-primary-custom" style="cursor:none;border:none;text-align:center;font-family:'DM Sans',sans-serif">
             Send Message &nbsp;<i class="fas fa-paper-plane"></i>
@@ -911,9 +911,38 @@
     // ── Form submit
     document.getElementById('contactForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      document.getElementById('formMsg').style.display = 'block';
-      this.reset();
-      setTimeout(() => document.getElementById('formMsg').style.display = 'none', 4000);
+      const form = this;
+      const formData = new FormData(form);
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const msgDiv = document.getElementById('formMsg');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending... <i class="fas fa-spinner fa-spin"></i>';
+      
+      fetch('submit_contact.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        msgDiv.textContent = data.message;
+        msgDiv.style.color = data.status === 'success' ? 'var(--teal)' : '#ff5252';
+        msgDiv.style.display = 'block';
+        
+        if (data.status === 'success') {
+          form.reset();
+        }
+      })
+      .catch(error => {
+        msgDiv.textContent = '✗ An error occurred. Please try again.';
+        msgDiv.style.color = '#ff5252';
+        msgDiv.style.display = 'block';
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send Message &nbsp;<i class="fas fa-paper-plane"></i>';
+        setTimeout(() => msgDiv.style.display = 'none', 5000);
+      });
     });
 
     // ── Typewriter effect on hero role
