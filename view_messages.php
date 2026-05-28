@@ -161,6 +161,11 @@ try {
       font-weight: 600;
       transition: all 0.2s;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      text-decoration: none;
     }
 
     .btn-delete:hover {
@@ -248,23 +253,23 @@ try {
         <table class="table" id="messagesTable">
           <thead>
             <tr>
-              <th>Sender</th>
-              <th>Email</th>
-              <th>Subject</th>
-              <th>Message</th>
-              <th>Received At</th>
-              <th class="text-center">Action</th>
+              <th style="width: 15%;">Sender</th>
+              <th style="width: 20%;">Email</th>
+              <th style="width: 20%;">Subject</th>
+              <th style="width: 30%;">Message</th>
+              <th style="width: 14%;">Received At</th>
+              <th class="text-center" style="width: 1%; white-space: nowrap;">Action</th>
             </tr>
           </thead>
           <tbody>
             <?php foreach ($messages as $row): ?>
               <tr>
                 <td style="font-weight: 600; white-space: nowrap;"><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?></td>
-                <td><a href="mailto:<?= htmlspecialchars($row['email']) ?>" style="color:var(--teal); text-decoration:none;"><?= htmlspecialchars($row['email']) ?></a></td>
+                <td style="white-space: nowrap;"><a href="mailto:<?= htmlspecialchars($row['email']) ?>" style="color:var(--teal); text-decoration:none;"><?= htmlspecialchars($row['email']) ?></a></td>
                 <td style="font-weight: 500; min-width: 150px;"><?= htmlspecialchars($row['subject']) ?></td>
-                <td style="font-size:0.85rem; color:var(--muted) !important; min-width: 250px; max-width: 350px;"><?= nl2br(htmlspecialchars($row['message'])) ?></td>
+                <td style="font-size:0.85rem; color:var(--muted) !important; min-width: 220px;"><?= nl2br(htmlspecialchars($row['message'])) ?></td>
                 <td class="badge-date" style="white-space: nowrap;"><?= date('M d, Y h:i A', strtotime($row['created_at'])) ?></td>
-                <td class="text-center">
+                <td class="text-center" style="white-space: nowrap;">
                   <a href="view_messages.php?delete_id=<?= $row['id'] ?>" class="btn-delete" onclick="return confirm('Are you sure you want to delete this message?');">
                     <i class="fas fa-trash-alt"></i> Delete
                   </a>
