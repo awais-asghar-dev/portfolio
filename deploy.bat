@@ -6,7 +6,7 @@ echo Step 2: Committing updates...
 git commit -m "Auto-update portfolio design"
 
 echo Step 3: Pushing live to GitHub Pages...
-git push origin main
+git push -f origin main
 
 echo Success! Your portfolio updates are live.
 pause
